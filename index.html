@@ -1,135 +1,1145 @@
 <!DOCTYPE html>
-<html>
-    <head>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gafete - Unidad de Hemodiálisis</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        <meta charset="UTF-8">
-        <title>Banquetes Cueto</title>
-        <link rel="stylesheet" type="text/css" href="css/styles1.css">
-        <link rel="stylesheet" type="text/css" href="normalize.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">
-        <script src="https://kit.fontawesome.com/9be2466e3a.js" crossorigin="anonymous"></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #112240;
+    --teal: #00b4d8;
+    --teal-light: #90e0ef;
+    --white: #f0f4ff;
+    --accent: #ff6b35;
+    --gray: #8892b0;
+    --border: rgba(0,180,216,0.25);
+  }
 
-    </head>
-    <body>
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
 
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--navy-mid) 0%, #0d1f3c 100%);
+    border-bottom: 2px solid var(--teal);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(0,180,216,0.15);
+  }
 
-        <div class="conten-b">
-            <div class="padre">
+  .logo-cross {
+    width: 52px; height: 52px;
+    background: var(--teal);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
 
-                <i class="subir fa-solid fa-caret-up "></i>
+  .logo-cross svg { width: 32px; height: 32px; fill: var(--navy); }
 
-            </div>
+  header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  header h1 span {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--teal-light);
+    font-weight: 300;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.1em;
+  }
+
+  /* STEPS */
+  .steps-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 2rem 1rem 0;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gray);
+    padding: 0.5rem 1.2rem;
+    border-bottom: 2px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .step.active { color: var(--teal); border-color: var(--teal); }
+  .step.done { color: var(--teal-light); border-color: var(--teal-light); }
+
+  .step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn 0.4s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--teal-light);
+    margin-bottom: 0.3rem;
+  }
+
+  .section-sub {
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* CARD */
+  .card {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1rem;
+  }
+
+  /* FORM ELEMENTS */
+  .field {
+    margin-bottom: 1.2rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--teal-light);
+    margin-bottom: 0.4rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+
+  label .req { color: var(--accent); margin-left: 3px; }
+
+  input, select, textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    color: var(--white);
+    font-size: 1rem;
+    font-family: 'Crimson Pro', serif;
+    transition: border 0.2s, background 0.2s;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--teal);
+    background: rgba(0,180,216,0.06);
+  }
+
+  select option { background: var(--navy-mid); }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  @media(max-width: 560px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* RADIO RIESGO */
+  .risk-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .risk-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.6rem 0.5rem;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: transparent;
+    color: var(--gray);
+    font-size: 0.85rem;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .risk-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .risk-btn.selected-bajo { border-color: #4ade80; background: rgba(74,222,128,0.1); color: #4ade80; }
+  .risk-btn.selected-medio { border-color: #facc15; background: rgba(250,204,21,0.1); color: #facc15; }
+  .risk-btn.selected-alto { border-color: #f87171; background: rgba(248,113,113,0.1); color: #f87171; }
+  .risk-btn.selected-muy-alto { border-color: #ef4444; background: rgba(239,68,68,0.15); color: #ef4444; font-weight: 700; }
+
+  /* CHECKBOX ALERGIAS */
+  .checkbox-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .check-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .check-chip input { display: none; }
+  .check-chip:hover { border-color: var(--teal); color: var(--teal); }
+  .check-chip.checked { background: rgba(0,180,216,0.15); border-color: var(--teal); color: var(--teal-light); }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-family: 'Crimson Pro', serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--border);
+    color: var(--gray);
+  }
+
+  .btn-outline:hover { border-color: var(--gray); color: var(--white); }
+
+  .btn-primary {
+    background: var(--teal);
+    color: var(--navy);
+  }
+
+  .btn-primary:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,180,216,0.3); }
+
+  .btn-success {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: var(--navy);
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(74,222,128,0.3); }
+
+  /* PREVIEW GAFETE */
+  .badge-preview {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    max-width: 380px;
+    margin: 2rem auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    font-family: Arial, sans-serif;
+    color: #1a1a2e;
+  }
+
+  .badge-header {
+    background: linear-gradient(135deg, #0a1628, #1a3a5c);
+    padding: 1rem 1.2rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .badge-logo {
+    width: 36px; height: 36px;
+    background: #00b4d8;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .badge-logo svg { width: 22px; fill: white; }
+
+  .badge-hosp-name {
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+  }
+
+  .badge-dept {
+    font-size: 9px;
+    color: #90e0ef;
+    font-weight: normal;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-body {
+    padding: 1rem 1.2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .badge-photo {
+    width: 90px; height: 110px;
+    background: #e8edf5;
+    border-radius: 8px;
+    border: 2px dashed #aac;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 9px;
+    color: #8892b0;
+    text-align: center;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .badge-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+  .badge-photo svg { width: 30px; opacity: 0.4; }
+
+  .badge-info { flex: 1; }
+
+  .badge-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0a1628;
+    margin-bottom: 2px;
+    border-bottom: 2px solid #00b4d8;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 3px;
+    align-items: baseline;
+  }
+
+  .badge-key {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #555;
+    min-width: 70px;
+    flex-shrink: 0;
+  }
+
+  .badge-val {
+    font-size: 10px;
+    color: #1a1a2e;
+    font-weight: 600;
+  }
+
+  .badge-blood {
+    background: #dc2626;
+    color: white;
+    font-size: 13px;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .badge-risk-pill {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .riesgo-bajo { background: #dcfce7; color: #166534; }
+  .riesgo-medio { background: #fef9c3; color: #854d0e; }
+  .riesgo-alto { background: #fee2e2; color: #991b1b; }
+  .riesgo-muy-alto { background: #7f1d1d; color: white; }
+
+  .badge-footer {
+    background: #f0f4ff;
+    padding: 0.5rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #d0d9ef;
+  }
+
+  .badge-footer-label { font-size: 8px; color: #555; text-transform: uppercase; letter-spacing: 0.08em; }
+  .badge-footer-val { font-size: 10px; font-weight: 700; color: #0a1628; }
+
+  /* PHOTO UPLOAD */
+  .photo-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .photo-upload-area:hover { border-color: var(--teal); background: rgba(0,180,216,0.05); }
+  .photo-upload-area input { display: none; }
+
+  .photo-preview-thumb {
+    width: 100px; height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0 auto;
+    display: none;
+  }
+
+  .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .upload-text { font-size: 0.9rem; color: var(--gray); }
+
+  /* REQUIRED ALERT */
+  .alert {
+    background: rgba(255,107,53,0.1);
+    border: 1px solid rgba(255,107,53,0.4);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+    color: #fca582;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* SUCCESS */
+  .success-icon {
+    text-align: center;
+    font-size: 3rem;
+    margin: 1rem 0 0.5rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-cross">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 8h-3V5a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v3H5a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h3v3a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-3h3a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3z"/>
+    </svg>
+  </div>
+  <h1>
+    Unidad de Hemodiálisis
+    <span>Sistema de Identificación de Pacientes</span>
+  </h1>
+</header>
+
+<!-- STEPS BAR -->
+<div class="steps-bar" id="stepsBar">
+  <div class="step active" id="s1">
+    <div class="step-num">1</div> Datos Personales
+  </div>
+  <div class="step" id="s2">
+    <div class="step-num">2</div> Datos Clínicos
+  </div>
+  <div class="step" id="s3">
+    <div class="step-num">3</div> Acceso Vascular
+  </div>
+  <div class="step" id="s4">
+    <div class="step-num">4</div> Gafete
+  </div>
+</div>
+
+<main>
+
+  <!-- SECCIÓN 1: DATOS PERSONALES -->
+  <div class="section active" id="sec1">
+    <div class="section-title">Datos del Paciente</div>
+    <div class="section-sub">INFORMACIÓN PERSONAL Y DE CONTACTO</div>
+
+    <div id="alertSec1" class="alert">⚠ Por favor completa todos los campos obligatorios.</div>
+
+    <div class="card">
+      <div class="card-label">📋 Identificación</div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Nombre completo <span class="req">*</span></label>
+          <input type="text" id="nombre" placeholder="Apellido Apellido, Nombre(s)">
+        </div>
+        <div class="field">
+          <label>Fecha de nacimiento <span class="req">*</span></label>
+          <input type="date" id="fechaNac">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>No. Expediente</label>
+          <input type="text" id="expediente" placeholder="Ej. HEM-2024-001">
+        </div>
+        <div class="field">
+          <label>CURP</label>
+          <input type="text" id="curp" placeholder="XXXX000000XXXXXX00" maxlength="18" style="text-transform:uppercase">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🏠 Domicilio</div>
+      <div class="field">
+        <label>Dirección completa <span class="req">*</span></label>
+        <textarea id="direccion" placeholder="Calle, Número, Colonia, Municipio, Estado, CP"></textarea>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Teléfono de contacto</label>
+          <input type="tel" id="telefono" placeholder="(000) 000-0000">
+        </div>
+        <div class="field">
+          <label>Nombre del responsable</label>
+          <input type="text" id="responsable" placeholder="Familiar o tutor">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">📸 Fotografía del Paciente</div>
+      <div class="photo-upload-area" onclick="document.getElementById('photoInput').click()">
+        <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto(this)">
+        <img id="photoPreviewThumb" class="photo-preview-thumb" alt="Foto">
+        <div id="uploadPrompt">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">Haz clic para subir una fotografía<br><small style="color:var(--gray)">JPG, PNG — Tamaño recomendado 3×4</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextSection(1)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: DATOS CLÍNICOS -->
+  <div class="section" id="sec2">
+    <div class="section-title">Datos Clínicos</div>
+    <div class="section-sub">INFORMACIÓN MÉDICA DEL PACIENTE</div>
+
+    <div id="alertSec2" class="alert">⚠ Por favor completa todos los campos obligatorios.</div>
+
+    <div class="card">
+      <div class="card-label">🩸 Tipo de Sangre</div>
+      <div class="field">
+        <label>Grupo sanguíneo y Rh <span class="req">*</span></label>
+        <select id="tipoSangre">
+          <option value="">— Seleccionar —</option>
+          <option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option>
+          <option>O+</option><option>O-</option>
+          <option>Desconocido</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">⚠️ Riesgo de Caída</div>
+      <div class="field">
+        <label>Nivel de riesgo <span class="req">*</span></label>
+        <div class="risk-group">
+          <button class="risk-btn" onclick="selectRisk(this,'bajo')" data-risk="bajo">🟢 BAJO</button>
+          <button class="risk-btn" onclick="selectRisk(this,'medio')" data-risk="medio">🟡 MEDIO</button>
+          <button class="risk-btn" onclick="selectRisk(this,'alto')" data-risk="alto">🔴 ALTO</button>
+          <button class="risk-btn" onclick="selectRisk(this,'muy-alto')" data-risk="muy-alto">🔴 MUY ALTO</button>
+        </div>
+        <input type="hidden" id="riesgoCaida" value="">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🚨 Alergias</div>
+      <div class="field">
+        <label>Alergias conocidas (selecciona todas las que apliquen)</label>
+        <div class="checkbox-grid" id="alergiasGrid">
+          <label class="check-chip"><input type="checkbox" value="Penicilina" onchange="toggleChip(this)"> Penicilina</label>
+          <label class="check-chip"><input type="checkbox" value="Sulfonamidas" onchange="toggleChip(this)"> Sulfonamidas</label>
+          <label class="check-chip"><input type="checkbox" value="AINEs" onchange="toggleChip(this)"> AINEs</label>
+          <label class="check-chip"><input type="checkbox" value="Látex" onchange="toggleChip(this)"> Látex</label>
+          <label class="check-chip"><input type="checkbox" value="Heparina" onchange="toggleChip(this)"> Heparina</label>
+          <label class="check-chip"><input type="checkbox" value="Medios de Contraste" onchange="toggleChip(this)"> Medios de Contraste</label>
+          <label class="check-chip"><input type="checkbox" value="Vancomicina" onchange="toggleChip(this)"> Vancomicina</label>
+          <label class="check-chip"><input type="checkbox" value="Sin alergias conocidas" onchange="toggleChip(this)"> Sin alergias conocidas</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Otras alergias (especificar)</label>
+        <input type="text" id="alergiasOtras" placeholder="Ej. Clopidogrel, mariscos...">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🫀 Enfermedades Crónico-Degenerativas</div>
+      <div class="field">
+        <label>Diagnósticos activos (selecciona todos los que apliquen)</label>
+        <div class="checkbox-grid" id="enfermedadesGrid">
+          <label class="check-chip"><input type="checkbox" value="Diabetes Mellitus T2" onchange="toggleChip(this)"> DM Tipo 2</label>
+          <label class="check-chip"><input type="checkbox" value="Hipertensión Arterial" onchange="toggleChip(this)"> Hipertensión</label>
+          <label class="check-chip"><input type="checkbox" value="Cardiopatía Isquémica" onchange="toggleChip(this)"> Cardiopatía</label>
+          <label class="check-chip"><input type="checkbox" value="EPOC" onchange="toggleChip(this)"> EPOC</label>
+          <label class="check-chip"><input type="checkbox" value="Lupus" onchange="toggleChip(this)"> Lupus</label>
+          <label class="check-chip"><input type="checkbox" value="Poliquistosis Renal" onchange="toggleChip(this)"> Poliquistosis Renal</label>
+          <label class="check-chip"><input type="checkbox" value="Nefropatía Diabética" onchange="toggleChip(this)"> Nefropatía Diabética</label>
+          <label class="check-chip"><input type="checkbox" value="Anemia Crónica" onchange="toggleChip(this)"> Anemia Crónica</label>
+          <label class="check-chip"><input type="checkbox" value="Dislipidemia" onchange="toggleChip(this)"> Dislipidemia</label>
+          <label class="check-chip"><input type="checkbox" value="Obesidad" onchange="toggleChip(this)"> Obesidad</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Otros diagnósticos</label>
+        <textarea id="enfermedadesOtras" placeholder="Especificar otros diagnósticos..."></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="prevSection(2)">← Atrás</button>
+      <button class="btn btn-primary" onclick="nextSection(2)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: ACCESO VASCULAR -->
+  <div class="section" id="sec3">
+    <div class="section-title">Acceso Vascular</div>
+    <div class="section-sub">INFORMACIÓN SOBRE EL ACCESO PARA HEMODIÁLISIS</div>
+
+    <div id="alertSec3" class="alert">⚠ Por favor completa todos los campos obligatorios.</div>
+
+    <div class="card">
+      <div class="card-label">🩸 Acceso Vascular Actual</div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Tipo de acceso vascular <span class="req">*</span></label>
+          <select id="tipoAcceso">
+            <option value="">— Seleccionar —</option>
+            <option>Fístula Arteriovenosa (FAV)</option>
+            <option>Injerto Arteriovenoso (IAV)</option>
+            <option>Catéter Venoso Central Tunelizado</option>
+            <option>Catéter Venoso Central No Tunelizado</option>
+            <option>Puerto de Acceso</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Ubicación del acceso</label>
+          <select id="ubicacionAcceso">
+            <option value="">— Seleccionar —</option>
+            <option>Brazo izquierdo</option>
+            <option>Brazo derecho</option>
+            <option>Antebrazo izquierdo</option>
+            <option>Antebrazo derecho</option>
+            <option>Yugular interna derecha</option>
+            <option>Yugular interna izquierda</option>
+            <option>Subclavia derecha</option>
+            <option>Subclavia izquierda</option>
+            <option>Femoral derecha</option>
+            <option>Femoral izquierda</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Fecha de inicio de Hemodiálisis <span class="req">*</span></label>
+          <input type="date" id="fechaHD">
+        </div>
+        <div class="field">
+          <label>Turno de diálisis</label>
+          <select id="turnoHD">
+            <option value="">— Seleccionar —</option>
+            <option>Matutino (Lun-Mié-Vie)</option>
+            <option>Vespertino (Lun-Mié-Vie)</option>
+            <option>Matutino (Mar-Jue-Sáb)</option>
+            <option>Vespertino (Mar-Jue-Sáb)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">📜 Accesos Previos</div>
+      <div class="field">
+        <label>Historial de accesos vasculares anteriores</label>
+        <textarea id="accesosPrevios" placeholder="Ej. FAV radiocefálica izquierda (2018-2020, trombosada). CVC yugular derecho (2021)..."></textarea>
+      </div>
+      <div class="field">
+        <label>Observaciones adicionales</label>
+        <textarea id="observaciones" placeholder="Notas clínicas relevantes, indicaciones especiales..."></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="prevSection(3)">← Atrás</button>
+      <button class="btn btn-primary" onclick="nextSection(3)">Generar Gafete →</button>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: GAFETE PREVIEW -->
+  <div class="section" id="sec4">
+    <div class="section-title">Gafete Generado</div>
+    <div class="section-sub">PREVISUALIZACIÓN — LISTO PARA IMPRIMIR</div>
+
+    <div class="success-icon">✅</div>
+    <p style="text-align:center;color:var(--gray);margin-bottom:1.5rem;">Revisa el gafete y descarga el PDF para imprimir.</p>
+
+    <!-- BADGE PREVIEW -->
+    <div class="badge-preview" id="badgePreview">
+      <div class="badge-header">
+        <div class="badge-logo">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 8h-3V5a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v3H5a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h3v3a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-3h3a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="badge-hosp-name">UNIDAD DE HEMODIÁLISIS</div>
+          <div class="badge-dept">IDENTIFICACIÓN DE PACIENTE</div>
+        </div>
+      </div>
+
+      <div class="badge-body">
+        <div class="badge-photo" id="badgePhotoArea">
+          <svg viewBox="0 0 24 24" fill="#8892b0"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <span>FOTO</span>
         </div>
 
-        <header>
-            <div class="juntar">
-                <div class="logo">
-                  <img class="loim" src="img/logo.jpg" alt=""> 
-                  <h1>Banquetes Cueto</h1>
-                </div>
+        <div class="badge-info">
+          <div class="badge-name" id="bNombre">—</div>
+          <div class="badge-row">
+            <span class="badge-key">Nacimiento:</span>
+            <span class="badge-val" id="bFechaNac">—</span>
+          </div>
+          <div class="badge-row">
+            <span class="badge-key">Expediente:</span>
+            <span class="badge-val" id="bExpediente">—</span>
+          </div>
+          <div class="badge-row">
+            <span class="badge-key">Tipo Sangre:</span>
+            <span class="badge-blood" id="bSangre">?</span>
+          </div>
+          <div class="badge-row">
+            <span class="badge-key">Riesgo Caída:</span>
+            <span class="badge-risk-pill" id="bRiesgo">—</span>
+          </div>
+          <div class="badge-row">
+            <span class="badge-key">Acceso:</span>
+            <span class="badge-val" id="bAcceso">—</span>
+          </div>
+          <div class="badge-row">
+            <span class="badge-key">Alergias:</span>
+            <span class="badge-val" id="bAlergias" style="font-size:9px;color:#dc2626;font-weight:700;">—</span>
+          </div>
+        </div>
+      </div>
 
-                <nav>
-                    <ul class="nav-links">
-                        <li><i class="fa-solid fa-house"></i><a href="#">Inicio</a></li>
-                        <li><i class="fa-solid fa-bag-shopping"></i><a href="#">Productos</a></li>
-                        <li><i class="fa-solid fa-phone"></i><a href="#">Contacto</a></li>
-                        <li ><i class="fa-solid fa-user"></i><a href="#" ></class=>Registrate</a></li>   
-                    </ul>
-                </nav>
-            </div>
-            <div class="burger">
-                <div class="line1"></div>
-                <div class="line2"></div>
-                <div class="line3"></div>
-            </div>
+      <div class="badge-footer">
+        <div>
+          <div class="badge-footer-label">Inicio HD</div>
+          <div class="badge-footer-val" id="bFechaHD">—</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="badge-footer-label">Ubicación</div>
+          <div class="badge-footer-val" id="bUbicacion">—</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="badge-footer-label">Turno</div>
+          <div class="badge-footer-val" id="bTurno">—</div>
+        </div>
+      </div>
+    </div>
 
+    <div style="max-width:380px;margin:0 auto;">
+      <button class="btn btn-success" onclick="generatePDF()">
+        📄 Descargar PDF para Imprimir
+      </button>
+      <div style="text-align:center;margin-top:0.7rem;">
+        <button class="btn btn-outline" onclick="prevSection(4)" style="font-size:0.9rem;padding:0.6rem 1.5rem;">← Editar datos</button>
+        &nbsp;
+        <button class="btn btn-outline" onclick="resetForm()" style="font-size:0.9rem;padding:0.6rem 1.5rem;">🔄 Nuevo paciente</button>
+      </div>
+    </div>
+  </div>
 
-        </header>
+</main>
 
-        <main>
+<script>
+  let currentSection = 1;
+  let photoDataUrl = '';
+  let selectedRisk = '';
 
-            <section class="arti">
-                <div class="Titulo-Conocenos">
-                    <h2 >Conocenos</h2>
-                </div>
-                <div class="Texto-conocenos">
-                    <p>Somos una empresa mexicana especializada en diseñar,  organizar y coordinar banquetes con 
-                        más de 30 años de experiencia. Nuestra pasión 
-                        por el buen servicio hace que cada evento sea un momento inolvidable, siempre cuidando cada detalle para ese día tan especial. 
-                    </p>
+  // ---- PHOTO PREVIEW ----
+  function previewPhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      photoDataUrl = e.target.result;
+      const thumb = document.getElementById('photoPreviewThumb');
+      const prompt = document.getElementById('uploadPrompt');
+      thumb.src = photoDataUrl;
+      thumb.style.display = 'block';
+      prompt.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
 
-                    <p class="cer"> Estamos certificados como Professional Wedding & Event Designer</p>
-                </div>
-            </section>
+  // ---- RISK SELECTION ----
+  function selectRisk(btn, val) {
+    document.querySelectorAll('.risk-btn').forEach(b => b.className = 'risk-btn');
+    btn.classList.add('selected-' + val);
+    selectedRisk = val;
+    document.getElementById('riesgoCaida').value = val;
+  }
 
-            <section class="arti1">
+  // ---- CHIP TOGGLE ----
+  function toggleChip(input) {
+    const chip = input.parentElement;
+    if (input.checked) chip.classList.add('checked');
+    else chip.classList.remove('checked');
+  }
 
-                <div class="cont-a">
-                    <h2>Mas populares </h2>
+  // ---- NAVIGATION ----
+  function getCheckedValues(gridId) {
+    return [...document.querySelectorAll(`#${gridId} input[type=checkbox]:checked`)].map(c => c.value);
+  }
 
-                </div>
-                <div class="nuevos-a">
-                    <div class="image">
-                        <img src="img/imagen1.jpeg" alt="Imagen 1">
-                        <h3>Producto 1</h3>
-                        <p>Descripción del producto 1.</p>
-                    </div>
+  function nextSection(from) {
+    // Validation
+    if (from === 1) {
+      if (!document.getElementById('nombre').value.trim() ||
+          !document.getElementById('fechaNac').value ||
+          !document.getElementById('direccion').value.trim()) {
+        document.getElementById('alertSec1').style.display = 'block';
+        return;
+      }
+      document.getElementById('alertSec1').style.display = 'none';
+    }
+    if (from === 2) {
+      if (!document.getElementById('tipoSangre').value || !selectedRisk) {
+        document.getElementById('alertSec2').style.display = 'block';
+        return;
+      }
+      document.getElementById('alertSec2').style.display = 'none';
+    }
+    if (from === 3) {
+      if (!document.getElementById('tipoAcceso').value || !document.getElementById('fechaHD').value) {
+        document.getElementById('alertSec3').style.display = 'block';
+        return;
+      }
+      document.getElementById('alertSec3').style.display = 'none';
+      buildBadge();
+    }
+    goToSection(from + 1);
+  }
 
-                    <div class="image">
-                        <img src="img/imagen2.jpg" alt="Imagen 2">
-                        <h3>Producto 2</h3>
-                        <p>Descripción del producto 2.</p>
-                    </div>
+  function prevSection(from) { goToSection(from - 1); }
 
-                    <div class="image">
-                        <img src="img/imagen3.jpg" alt="Imagen 3">
-                        <h3>Producto 3</h3>
-                        <p>Descripción del producto 3.</p>
-                    </div>
-                </div>
-            </section>
+  function goToSection(n) {
+    document.querySelector('.section.active').classList.remove('active');
+    document.getElementById('sec' + n).classList.add('active');
+    // Steps
+    for (let i = 1; i <= 4; i++) {
+      const s = document.getElementById('s' + i);
+      s.className = 'step';
+      if (i < n) s.classList.add('done');
+      if (i === n) s.classList.add('active');
+    }
+    currentSection = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-            <section class="arti2">
+  // ---- BUILD BADGE ----
+  function buildBadge() {
+    const nombre = document.getElementById('nombre').value;
+    const fechaNac = document.getElementById('fechaNac').value;
+    const expediente = document.getElementById('expediente').value || 'N/D';
+    const sangre = document.getElementById('tipoSangre').value;
+    const acceso = document.getElementById('tipoAcceso').value;
+    const ubicacion = document.getElementById('ubicacionAcceso').value || '—';
+    const fechaHD = document.getElementById('fechaHD').value;
+    const turno = document.getElementById('turnoHD').value || '—';
 
+    const alergias = getCheckedValues('alergiasGrid');
+    const alergiasOtras = document.getElementById('alergiasOtras').value;
+    if (alergiasOtras) alergias.push(alergiasOtras);
+    const alergiasTxt = alergias.length ? alergias.join(', ') : 'Sin alergias registradas';
 
-                <div class="proc">
-                    <h2>Productos nuevos</h2>
-                </div>
+    const riesgoMap = { 'bajo': 'BAJO', 'medio': 'MEDIO', 'alto': 'ALTO', 'muy-alto': 'MUY ALTO' };
+    const riesgoClass = { 'bajo': 'riesgo-bajo', 'medio': 'riesgo-medio', 'alto': 'riesgo-alto', 'muy-alto': 'riesgo-muy-alto' };
 
-                <div class="nuevos-a">
-                    <div class="image1">
-                        <img src="img/producto8.jpg" alt="Producto 4">
-                        <h3>Producto 4</h3>
-                        <p>$120</p>
-                    </div>
+    document.getElementById('bNombre').textContent = nombre;
+    document.getElementById('bFechaNac').textContent = formatDate(fechaNac);
+    document.getElementById('bExpediente').textContent = expediente;
+    document.getElementById('bSangre').textContent = sangre;
+    document.getElementById('bAcceso').textContent = acceso.split('(')[0].trim();
+    document.getElementById('bAlergias').textContent = alergiasTxt.length > 45 ? alergiasTxt.substring(0,44)+'…' : alergiasTxt;
+    document.getElementById('bFechaHD').textContent = formatDate(fechaHD);
+    document.getElementById('bUbicacion').textContent = ubicacion.split(' ').slice(0,2).join(' ');
+    document.getElementById('bTurno').textContent = turno.split('(')[0].trim();
 
+    const rPill = document.getElementById('bRiesgo');
+    rPill.textContent = riesgoMap[selectedRisk];
+    rPill.className = 'badge-risk-pill ' + riesgoClass[selectedRisk];
 
-                    <div class="image1">
-                        <img src="img/producto5.jpg" alt="Producto 4">
-                        <h3>Producto 4</h3>
-                        <p>$120</p>
-                    </div>
+    // Photo
+    const photoArea = document.getElementById('badgePhotoArea');
+    if (photoDataUrl) {
+      photoArea.innerHTML = `<img src="${photoDataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+    }
+  }
 
-                    <div class="image1">
-                        <img src="img/producto6.jpg" alt="Producto 4">
-                        <h3>Producto 4</h3>
-                        <p>$120</p>
-                    </div>
+  function formatDate(d) {
+    if (!d) return '—';
+    const [y, m, day] = d.split('-');
+    return `${day}/${m}/${y}`;
+  }
 
-                </div>
+  // ---- GENERATE PDF ----
+  async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: [90, 130], orientation: 'portrait' });
 
-            </section>
+    const nombre = document.getElementById('nombre').value;
+    const fechaNac = document.getElementById('fechaNac').value;
+    const expediente = document.getElementById('expediente').value || 'N/D';
+    const curp = document.getElementById('curp').value || 'N/D';
+    const direccion = document.getElementById('direccion').value;
+    const telefono = document.getElementById('telefono').value || 'N/D';
+    const responsable = document.getElementById('responsable').value || 'N/D';
+    const sangre = document.getElementById('tipoSangre').value;
+    const acceso = document.getElementById('tipoAcceso').value;
+    const ubicacion = document.getElementById('ubicacionAcceso').value || 'N/D';
+    const fechaHD = document.getElementById('fechaHD').value;
+    const turno = document.getElementById('turnoHD').value || 'N/D';
+    const accesosPrevios = document.getElementById('accesosPrevios').value || 'Sin accesos previos';
+    const observaciones = document.getElementById('observaciones').value || 'N/D';
 
+    const alergias = getCheckedValues('alergiasGrid');
+    const alergiasOtras = document.getElementById('alergiasOtras').value;
+    if (alergiasOtras) alergias.push(alergiasOtras);
+    const alergiasTxt = alergias.length ? alergias.join(', ') : 'Sin alergias conocidas';
 
+    const enfermedades = getCheckedValues('enfermedadesGrid');
+    const enfermedadesOtras = document.getElementById('enfermedadesOtras').value;
+    if (enfermedadesOtras) enfermedades.push(enfermedadesOtras);
+    const enfermedadesTxt = enfermedades.length ? enfermedades.join(', ') : 'No especificadas';
 
-        </main>   
+    const riesgoMap = { 'bajo': 'BAJO', 'medio': 'MEDIO', 'alto': 'ALTO', 'muy-alto': 'MUY ALTO' };
+    const W = 90; const H = 130;
 
-        <footer>
+    // --- HEADER ---
+    doc.setFillColor(10, 22, 40);
+    doc.rect(0, 0, W, 20, 'F');
+    doc.setFillColor(0, 180, 216);
+    doc.rect(2, 3, 13, 14, 'F');
+    // Cross on blue rect
+    doc.setFillColor(255,255,255);
+    doc.rect(7, 4.5, 3, 11, 'F');
+    doc.rect(3.5, 8, 10, 3, 'F');
 
-        </footer>
-    </body>
+    doc.setFontSize(8);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(255,255,255);
+    doc.text('UNIDAD DE HEMODIÁLISIS', 18, 9);
+    doc.setFontSize(6);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(144, 224, 239);
+    doc.text('IDENTIFICACIÓN DE PACIENTE', 18, 14);
+
+    // --- PHOTO BOX ---
+    let photoX = 4; let photoY = 23; let photoW = 24; let photoH = 30;
+    if (photoDataUrl) {
+      try { doc.addImage(photoDataUrl, 'JPEG', photoX, photoY, photoW, photoH); } catch(e) {}
+    } else {
+      doc.setFillColor(230, 235, 245);
+      doc.rect(photoX, photoY, photoW, photoH, 'F');
+      doc.setFontSize(6);
+      doc.setTextColor(150,150,170);
+      doc.text('FOTO', photoX + photoW/2, photoY + photoH/2, { align:'center' });
+    }
+    doc.setDrawColor(0,180,216);
+    doc.setLineWidth(0.5);
+    doc.rect(photoX, photoY, photoW, photoH);
+
+    // --- NAME & BASIC INFO ---
+    let infoX = 31;
+    doc.setFontSize(9);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(10, 22, 40);
+    const nombreLines = doc.splitTextToSize(nombre, 56);
+    doc.text(nombreLines, infoX, 27);
+
+    doc.setDrawColor(0,180,216);
+    doc.setLineWidth(0.8);
+    doc.line(infoX, 29 + nombreLines.length*3.5, W-4, 29 + nombreLines.length*3.5);
+
+    let y = 32 + nombreLines.length*3.5;
+
+    function row(label, val, highlight) {
+      doc.setFontSize(5.5);
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(80,80,100);
+      doc.text(label, infoX, y);
+      doc.setFont('helvetica','bold');
+      if (highlight === 'blood') {
+        doc.setFillColor(220,38,38);
+        doc.rect(infoX + 24, y-3.5, 10, 5, 'F');
+        doc.setTextColor(255,255,255);
+        doc.setFontSize(7);
+        doc.text(val, infoX+29, y, {align:'center'});
+      } else if (highlight === 'risk') {
+        const riskColors = { 'bajo': [220,252,231,22,101,52], 'medio': [254,249,195,133,77,14], 'alto': [254,226,226,153,27,27], 'muy-alto': [127,29,29,255,255,255] };
+        const c = riskColors[selectedRisk] || [200,200,200,50,50,50];
+        doc.setFillColor(c[0],c[1],c[2]);
+        doc.rect(infoX+20, y-3.5, 22, 5, 'F');
+        doc.setTextColor(c[3],c[4],c[5]);
+        doc.setFontSize(6);
+        doc.text(val, infoX+31, y, {align:'center'});
+      } else {
+        doc.setTextColor(10,22,40);
+        doc.setFontSize(6);
+        const lines = doc.splitTextToSize(val, 35);
+        doc.text(lines, infoX+21, y);
+        y += (lines.length-1)*3;
+      }
+      doc.setTextColor(10,22,40);
+      y += 5;
+    }
+
+    row('Nacimiento:', formatDate(fechaNac));
+    row('Expediente:', expediente);
+    row('Tipo Sangre:', sangre, 'blood');
+    row('Riesgo Caída:', riesgoMap[selectedRisk]||'—', 'risk');
+    row('Acceso:', acceso.split('(')[0]);
+
+    // --- SEPARATOR ---
+    doc.setFillColor(0,180,216);
+    doc.rect(0, 58, W, 0.7, 'F');
+
+    // --- SECOND HALF ---
+    y = 63;
+    function fullRow(label, val) {
+      doc.setFontSize(5.5);
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(0,140,170);
+      doc.text(label.toUpperCase(), 4, y);
+      doc.setFont('helvetica','normal');
+      doc.setTextColor(10,22,40);
+      doc.setFontSize(6);
+      const lines = doc.splitTextToSize(val, W-8);
+      doc.text(lines, 4, y+3.5);
+      y += 3.5 + lines.length*3 + 2;
+    }
+
+    fullRow('Domicilio', direccion);
+    fullRow('Teléfono', telefono + '   Responsable: ' + responsable);
+    fullRow('Alergias', alergiasTxt);
+    fullRow('Enf. Crónicas', enfermedadesTxt);
+    fullRow('Ubicación Acceso', ubicacion);
+    fullRow('Accesos Previos', accesosPrevios);
+    if (observaciones && observaciones !== 'N/D') fullRow('Observaciones', observaciones);
+
+    // --- FOOTER ---
+    doc.setFillColor(240,244,255);
+    doc.rect(0, H-16, W, 16, 'F');
+    doc.setFillColor(0,180,216);
+    doc.rect(0, H-16, W, 0.5, 'F');
+
+    doc.setFontSize(5.5);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(80,80,100);
+    doc.text('INICIO HD', 4, H-11);
+    doc.text('TURNO', W/2-5, H-11);
+    doc.text('CURP', W-28, H-11);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(10,22,40);
+    doc.setFontSize(7);
+    doc.text(formatDate(fechaHD), 4, H-6);
+    doc.setFontSize(6);
+    doc.text(turno.split('(')[0].trim(), W/2-5, H-6);
+    doc.setFontSize(5.5);
+    doc.text(curp, W-28, H-6);
+
+    doc.save(`Gafete_${nombre.replace(/\s+/g,'_')}.pdf`);
+  }
+
+  // ---- RESET ----
+  function resetForm() {
+    if (!confirm('¿Deseas crear un nuevo gafete? Se perderán los datos actuales.')) return;
+    document.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=file]), textarea, select').forEach(el => el.value = '');
+    document.querySelectorAll('.check-chip').forEach(c => c.classList.remove('checked'));
+    document.querySelectorAll('input[type=checkbox]').forEach(c => c.checked = false);
+    document.querySelectorAll('.risk-btn').forEach(b => b.className = 'risk-btn');
+    selectedRisk = '';
+    photoDataUrl = '';
+    document.getElementById('photoPreviewThumb').style.display = 'none';
+    document.getElementById('uploadPrompt').style.display = 'block';
+    goToSection(1);
+  }
+</script>
+</body>
 </html>
